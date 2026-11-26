@@ -61,7 +61,7 @@ Por padrão, a aplicação utiliza o perfil `test`, configurado com banco H2 em 
 Linux / macOS:
 
 ```bash
-./mvnw spring-boot:run
+bash ./mvnw spring-boot:run
 ```
 
 Windows:
@@ -88,7 +88,7 @@ Linux / macOS:
 export APP_PROFILE=dev
 export DB_USERNAME=postgres
 export DB_PASSWORD=sua_senha
-./mvnw spring-boot:run
+bash ./mvnw spring-boot:run
 ```
 
 Windows PowerShell:
@@ -147,7 +147,7 @@ Execute a suíte automatizada com:
 Linux / macOS:
 
 ```bash
-./mvnw --batch-mode verify
+bash ./mvnw --batch-mode verify
 ```
 
 Windows:
