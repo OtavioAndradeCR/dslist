@@ -1,132 +1,165 @@
-# DSList – API de Catálogo de Jogos
+# DSList — API de Catálogo e Organização de Jogos
 
-## 📌 Visão Geral
+[![Java CI](https://github.com/OtavioAndradeCR/dslist/actions/workflows/maven.yml/badge.svg)](https://github.com/OtavioAndradeCR/dslist/actions/workflows/maven.yml)
 
-O **DSList** é uma **API REST desenvolvida em Java com Spring Boot** para gerenciamento e listagem de jogos organizados por listas. O projeto permite consultar jogos, visualizar listas disponíveis e obter os jogos associados a cada lista, mantendo uma ordenação personalizada.
+API REST desenvolvida com **Java 21 e Spring Boot** para consultar jogos, visualizar listas temáticas e reorganizar a posição dos jogos dentro de cada lista.
 
-Este projeto foi desenvolvido com foco em **boas práticas de backend**, arquitetura em camadas e organização de código, sendo ideal para demonstração técnica em **portfólio profissional**.
+O projeto demonstra desenvolvimento backend com Spring Boot, persistência relacional, consultas personalizadas com Spring Data JPA e organização em camadas.
 
----
+## Funcionalidades
 
-## 🎯 Objetivo do Projeto
+- Consultar o catálogo de jogos.
+- Consultar os detalhes de um jogo pelo identificador.
+- Listar as coleções disponíveis.
+- Consultar os jogos de uma coleção.
+- Reordenar jogos dentro de uma coleção.
 
-* Expor uma API REST para listagem de jogos
-* Demonstrar uso de Spring Boot, JPA e arquitetura em camadas
-* Aplicar boas práticas como DTOs, Services e Repositories
-* Servir como projeto de estudo e portfólio para recrutadores
+## Tecnologias
 
----
+- Java 21
+- Spring Boot 3.5
+- Spring Web
+- Spring Data JPA / Hibernate
+- PostgreSQL
+- H2 Database para testes
+- Maven
 
-## 🛠️ Tecnologias Utilizadas
+## Organização do código
 
-* **Java**
-* **Spring Boot**
-* **Spring Data JPA**
-* **Hibernate**
-* **Banco de Dados H2 / PostgreSQL** (dependendo do perfil)
-* **Maven**
-* **API REST**
+O projeto utiliza uma arquitetura em camadas, organizada por responsabilidade:
 
----
+| Pacote | Responsabilidade |
+| --- | --- |
+| `controllers` | Exposição dos endpoints REST |
+| `services` | Regras de aplicação e transações |
+| `repositories` | Persistência e consultas com Spring Data JPA |
+| `entities` | Entidades mapeadas para o banco de dados |
+| `dto` | Objetos de transferência de dados |
+| `projections` | Projeções utilizadas em consultas específicas |
+| `config` | Configurações da aplicação, como CORS |
 
-## 🧱 Arquitetura
+## Requisitos
 
-O projeto segue o padrão de **arquitetura em camadas**:
+- JDK 21
+- Git
 
-* **Controller** – Camada de entrada (API REST)
-* **Service** – Regras de negócio
-* **Repository** – Acesso a dados (JPA)
-* **DTOs** – Transporte de dados entre camadas
-* **Entities** – Mapeamento das tabelas do banco
+O Maven Wrapper (`mvnw` / `mvnw.cmd`) já está incluído no repositório. Não é necessário instalar o Maven globalmente.
 
-Essa separação garante melhor manutenção, legibilidade e escalabilidade do código.
+## Como executar
 
----
-
-## ▶️ Como Executar o Projeto
-
-### Pré-requisitos
-
-* Java 17+
-* Maven
-
-### Passos
+Clone o repositório:
 
 ```bash
-# Clonar o repositório
 git clone https://github.com/OtavioAndradeCR/dslist.git
-
-# Acessar a pasta do projeto
 cd dslist
-
-# Executar a aplicação
-mvn spring-boot:run
 ```
 
-A aplicação estará disponível em:
+### Executar com o perfil de teste
+
+Por padrão, a aplicação utiliza o perfil `test`, configurado com banco H2 em memória. Para iniciar:
+
+Linux / macOS:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+### Executar com PostgreSQL (perfil dev)
+
+Crie um banco PostgreSQL chamado `dslist` e configure as variáveis de ambiente:
+
+| Variável | Valor de exemplo |
+| --- | --- |
+| `DB_URL` | `jdbc:postgresql://localhost:5433/dslist` |
+| `DB_USERNAME` | usuário do PostgreSQL |
+| `DB_PASSWORD` | senha do PostgreSQL |
+
+O perfil de desenvolvimento usa PostgreSQL na porta `5433` por padrão. A URL pode ser sobrescrita por `DB_URL`.
+
+Linux / macOS:
+
+```bash
+export APP_PROFILE=dev
+export DB_USERNAME=postgres
+export DB_PASSWORD=sua_senha
+./mvnw spring-boot:run
+```
+
+Windows PowerShell:
+
+```powershell
+$env:APP_PROFILE = "dev"
+$env:DB_USERNAME = "postgres"
+$env:DB_PASSWORD = "sua_senha"
+.\mvnw.cmd spring-boot:run
+```
+
+Não versione senhas ou credenciais reais. O perfil `prod` também recebe URL, usuário e senha pelas variáveis `DB_URL`, `DB_USERNAME` e `DB_PASSWORD`.
+
+A aplicação inicia, por padrão, em:
 
 ```
 http://localhost:8080
 ```
 
----
+## Endpoints
 
-## 📡 Endpoints Principais
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| GET | `/games` | Lista os jogos do catálogo |
+| GET | `/games/{id}` | Busca os detalhes de um jogo |
+| GET | `/lists` | Lista as coleções |
+| GET | `/lists/{listId}/games` | Lista os jogos de uma coleção |
+| POST | `/lists/{listId}/replacement` | Altera a ordem dos jogos da coleção |
 
-### 🔹 Listar todos os jogos
-
-```
-GET /games
-```
-
-### 🔹 Buscar jogo por ID
-
-```
-GET /games/{id}
-```
-
-### 🔹 Listar todas as listas de jogos
-
-```
-GET /lists
-```
-
-### 🔹 Listar jogos por lista
-
-```
-GET /lists/{listId}/games
-```
-
----
-
-## 🧪 Exemplos de Uso (curl)
+### Exemplo: consultar jogos
 
 ```bash
 curl http://localhost:8080/games
 ```
 
-```bash
-curl http://localhost:8080/lists
-```
+### Exemplo: consultar jogos de uma lista
 
 ```bash
 curl http://localhost:8080/lists/1/games
 ```
 
+### Exemplo: reorganizar jogos
+
+O endpoint recebe os índices de origem e destino no corpo da requisição:
+
+```bash
+curl -X POST http://localhost:8080/lists/1/replacement \
+  -H "Content-Type: application/json" \
+  -d '{"sourceIndex": 0, "destinationIndex": 2}'
+```
+
+## Testes
+
+Execute a suíte automatizada com:
+
+Linux / macOS:
+
+```bash
+./mvnw --batch-mode verify
+```
+
+Windows:
+
+```powershell
+.\mvnw.cmd --batch-mode verify
+```
+
+O teste de contexto valida a inicialização da aplicação com o perfil de teste e o banco H2.
+
+O GitHub Actions executa o build e os testes automaticamente em pushes e pull requests direcionados à branch `main`.
+
 ---
 
-## 🧩 Diferenciais Técnicos
-
-* Uso de **DTOs** para controle de exposição de dados
-* Organização clara de pacotes
-* Separação de responsabilidades
-* Código limpo e fácil de evoluir
-
----
-
-## 📈 Possíveis Evoluções
-
-* Autenticação e autorização (Spring Security + JWT)
-* Paginação e filtros
-* Deploy em nuvem (Azure, AWS ou Railway)
-* Documentação com Swagger/OpenAPI
+Desenvolvido como projeto de estudo e portfólio para demonstrar práticas de desenvolvimento de APIs REST com Java e Spring Boot.
